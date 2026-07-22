@@ -1,4 +1,5 @@
 extends Area2D
+signal base_clicked(base_node)
 
 # --- VARIABLES CONFIGURABLES ---
 # @export permite modificar estos valores desde el Inspector de Godot
@@ -42,7 +43,5 @@ func set_selected(selected: bool) -> void:
 func _on_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
 	# Verificamos si el evento es un clic del mouse, si es el botón izquierdo, y si acaba de ser presionado
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
-		# Solo deberíamos poder seleccionar bases que nos pertenecen
-		if is_player:
-			# Alternamos el estado de selección
-			set_selected(!is_selected)
+		# Le decimos al Nivel: "!Me hicieron click, y soy yo (self)!"
+		base_clicked.emit(self)
