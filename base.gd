@@ -8,7 +8,7 @@ extends Area2D
 @export var troops_per_second: int = 1
 
 # --- ESTADO INTERNO ---
-var current_troops: int = 10
+@export var current_troops: int = 15
 var is_selected: bool = false # 
 
 # Referencia al texto en pantalla

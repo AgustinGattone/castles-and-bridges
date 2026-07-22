@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://c4vrmukc83un5"]
+
+[ext_resource type="PackedScene" uid="uid://d2k3p2c3e42i7" path="res://scenes/base.tscn" id="1_0uyns"]
+
+[node name="Nivel" type="Node2D" unique_id=902642756]
+
+[node name="Base" parent="." unique_id=784258533 instance=ExtResource("1_0uyns")]
+position = Vector2(103, 76)
+
+[node name="Base2" parent="." unique_id=1470221921 instance=ExtResource("1_0uyns")]
+position = Vector2(96, 270)
+is_player = false
+current_troops = 10
+
+[node name="Base3" parent="." unique_id=1977577078 instance=ExtResource("1_0uyns")]
+position = Vector2(300, 76)
+is_player = false
+is_neutral = true
+current_troops = 5
