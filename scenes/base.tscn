@@ -37,4 +37,5 @@ position = Vector2(-1.0000052, -3.33786e-06)
 scale = Vector2(0.45703134, 0.46093756)
 texture = ExtResource("2_t45w4")
 
+[connection signal="input_event" from="." to="." method="_on_input_event"]
 [connection signal="timeout" from="Timer" to="." method="_on_generation_timer_timeout"]
