@@ -35,15 +35,28 @@ func _on_base_clicked(base_clicada: Area2D) -> void:
 
 # Lógica matemática de mover tropas (Teletransporte temporal)
 func enviar_tropas(origen: Area2D, destino: Area2D) -> void:
-	# Calculamos la mitad de las tropas (la división entera en Godot redondea hacia abajo)
 	var tropas_a_enviar = origen.current_troops / 2
 	
 	# Restamos las tropas del origen
 	origen.current_troops -= tropas_a_enviar
 	origen.update_label()
 	
-	# Sumamos las tropas al destino (Por ahora es magia instantánea)
-	destino.current_troops += tropas_a_enviar
-	destino.update_label()
+	# -----------------------------------------------------
+	# NUEVO: En lugar de sumar al destino, creamos un escuadrón
+	# -----------------------------------------------------
 	
-	print("Se enviaron ", tropas_a_enviar, " tropas a la base objetivo.")
+	# 1. Clonamos la escena del escuadrón
+	var nuevo_escuadron = escuadron_escena.instantiate()
+	
+	# 2. Le pasamos los datos que necesita
+	nuevo_escuadron.cantidad_tropas = tropas_a_enviar
+	nuevo_escuadron.base_destino = destino
+	
+	# 3. Lo posicionamos exactamente donde está la base de origen
+	nuevo_escuadron.global_position = origen.global_position
+	
+	# 4. Lo añadimos como "hijo" del Nivel para que aparezca en el juego
+	add_child(nuevo_escuadron)
+
+# Cargamos el "molde" del escuadrón
+var escuadron_escena = preload("res://scenes/escuadron.tscn")

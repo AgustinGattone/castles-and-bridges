@@ -1,0 +1,17 @@
+[gd_scene format=3 uid="uid://c7aoyaeuu04lr"]
+
+[ext_resource type="Script" uid="uid://8fn1m5wbsju1" path="res://escuadron.gd" id="1_571uh"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_k6d34"]
+
+[node name="Escuadron" type="Area2D" unique_id=1839718332]
+script = ExtResource("1_571uh")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=960097580]
+shape = SubResource("CircleShape2D_k6d34")
+
+[node name="Label" type="Label" parent="." unique_id=1822113095]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "5
+"
