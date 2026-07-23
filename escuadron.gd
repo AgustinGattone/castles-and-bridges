@@ -5,12 +5,20 @@ var cantidad_tropas: int = 0
 var base_destino: Area2D = null
 var es_del_jugador: bool = false
 var velocidad: float = 100.0 # Píxeles por segundo
+var destruido: bool = false
 
 @onready var label_tropas: Label = $Label
 
 func _ready() -> void:
 	# Al nacer, actualiza el número visual
+	actualizar_texto()
+
+func actualizar_texto() -> void:
 	label_tropas.text = str(cantidad_tropas)
+
+func eliminar_escuadron() -> void:
+	destruido = true
+	queue_free() #Borrar escuadron de la pantalla
 
 # _process se ejecuta en cada frame (ej. 60 veces por segundo)
 func _process(delta: float) -> void:
@@ -48,3 +56,31 @@ func entregar_tropas() -> void:
 	
 	# Destruimos este escuadrón (lo borramos de la memoria)
 	queue_free()
+
+
+func _on_area_entered(area: Area2D) -> void:
+	# 1. Evitar el "doble cálculo" si uno de los dos ya fue destruido en este frame
+	if self.destruido or area.get("destruido") == true:
+		return
+	if "es_del_jugador" in area:
+		# 3. Comprobar si es de un equipo distinto
+		if area.es_del_jugador != self.es_del_jugador:
+			
+			# --- RESOLUCIÓN DE COMBATE ---
+			
+			# Si nosotros tenemos más tropas
+			if self.cantidad_tropas > area.cantidad_tropas:
+				self.cantidad_tropas -= area.cantidad_tropas
+				self.actualizar_texto()
+				area.eliminar_escuadron() # El enemigo muere
+				
+			# Si el enemigo tiene más tropas
+			elif self.cantidad_tropas < area.cantidad_tropas:
+				area.cantidad_tropas -= self.cantidad_tropas
+				area.actualizar_texto()
+				self.eliminar_escuadron() # Nosotros morimos
+
+			# Si es un empate exacto
+			else:
+				self.eliminar_escuadron()
+				area.eliminar_escuadron()
