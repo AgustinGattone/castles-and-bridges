@@ -7,9 +7,17 @@ var es_del_jugador: bool = false
 var velocidad: float = 100.0 # Píxeles por segundo
 var destruido: bool = false
 
+# --- ESTADOS DE COMBATE ---
+var en_combate: bool = false
+var enemigo_actual: Area2D = null
+var tropas_float: float = 0.0
+var velocidad_combate: float = 15.0 # Tropas que mueren por segundo
+
 @onready var label_tropas: Label = $Label
 
 func _ready() -> void:
+	# Sincronizamos la variable de daño con la cantidad real
+	tropas_float = float(cantidad_tropas)
 	# Al nacer, actualiza el número visual
 	actualizar_texto()
 
@@ -22,17 +30,29 @@ func eliminar_escuadron() -> void:
 
 # _process se ejecuta en cada frame (ej. 60 veces por segundo)
 func _process(delta: float) -> void:
-	# Si no tenemos destino, no hacemos nada
+	# --- ESTADO 1: PELEANDO ---
+	if en_combate:
+		# 1. Si el enemigo murió, terminamos el combate.
+		if not is_instance_valid(enemigo_actual) or enemigo_actual.destruido:
+			en_combate = false
+			enemigo_actual = null
+			return
+		# 2. Calculo daño recibido
+		tropas_float -= velocidad_combate * delta
+		cantidad_tropas = int(tropas_float)
+		actualizar_texto()
+		
+		# 3. Si llegamos a 0, muere el jugador.
+		if cantidad_tropas <= 0:
+			eliminar_escuadron()
+		return
+	# --- ESTADO 2: EN MOVIMIENTO ---
 	if base_destino == null:
 		return
-		
-	# 1. Calculamos la dirección hacia la base destino
-	var direccion = global_position.direction_to(base_destino.global_position)
 	
-	# 2. Nos movemos en esa dirección usando la velocidad y el delta (tiempo entre frames)
+	var direccion = global_position.direction_to(base_destino.global_position)
 	global_position += direccion * velocidad * delta
 	
-	# 3. Comprobamos si ya llegamos (si estamos muy cerca)
 	if global_position.distance_to(base_destino.global_position) < 10.0:
 		entregar_tropas()
 
@@ -59,28 +79,10 @@ func entregar_tropas() -> void:
 
 
 func _on_area_entered(area: Area2D) -> void:
-	# 1. Evitar el "doble cálculo" si uno de los dos ya fue destruido en este frame
 	if self.destruido or area.get("destruido") == true:
 		return
-	if "es_del_jugador" in area:
-		# 3. Comprobar si es de un equipo distinto
-		if area.es_del_jugador != self.es_del_jugador:
-			
-			# --- RESOLUCIÓN DE COMBATE ---
-			
-			# Si nosotros tenemos más tropas
-			if self.cantidad_tropas > area.cantidad_tropas:
-				self.cantidad_tropas -= area.cantidad_tropas
-				self.actualizar_texto()
-				area.eliminar_escuadron() # El enemigo muere
-				
-			# Si el enemigo tiene más tropas
-			elif self.cantidad_tropas < area.cantidad_tropas:
-				area.cantidad_tropas -= self.cantidad_tropas
-				area.actualizar_texto()
-				self.eliminar_escuadron() # Nosotros morimos
-
-			# Si es un empate exacto
-			else:
-				self.eliminar_escuadron()
-				area.eliminar_escuadron()
+		
+	if "es_del_jugador" in area and area.es_del_jugador != self.es_del_jugador:
+		# Peleamos la batalla
+		en_combate = true
+		enemigo_actual = area 
