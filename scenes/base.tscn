@@ -1,12 +1,14 @@
 [gd_scene format=3 uid="uid://d2k3p2c3e42i7"]
 
 [ext_resource type="Script" uid="uid://b2xgm7vf456kv" path="res://base.gd" id="1_baglu"]
-[ext_resource type="Texture2D" uid="uid://c4u8w5di3b1bo" path="res://icon.svg" id="2_t45w4"]
+[ext_resource type="Texture2D" uid="uid://ckh3i7qc6mqcr" path="res://assets/castillo.png" id="2_baglu"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_k6d34"]
 radius = 25.495098
 
 [sub_resource type="LabelSettings" id="LabelSettings_mvn1x"]
+outline_size = 3
+outline_color = Color(0, 0, 0, 1)
 
 [node name="Base" type="Area2D" unique_id=784258533]
 position = Vector2(168, 133)
@@ -17,6 +19,11 @@ is_neutral = false
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1879947290]
 position = Vector2(0, 1)
 shape = SubResource("CircleShape2D_k6d34")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2662745]
+position = Vector2(0.0937562, 1.0000043)
+scale = Vector2(0.01910955, 0.03515624)
+texture = ExtResource("2_baglu")
 
 [node name="Label" type="Label" parent="." unique_id=1991545580]
 offset_left = -21.0
@@ -30,12 +37,6 @@ metadata/_edit_use_anchors_ = true
 
 [node name="Timer" type="Timer" parent="." unique_id=1540997247]
 autostart = true
-
-[node name="Sprite2D" type="Sprite2D" parent="." unique_id=2662745]
-visible = false
-position = Vector2(-1.0000052, -3.33786e-06)
-scale = Vector2(0.45703134, 0.46093756)
-texture = ExtResource("2_t45w4")
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]
 [connection signal="timeout" from="Timer" to="." method="_on_generation_timer_timeout"]

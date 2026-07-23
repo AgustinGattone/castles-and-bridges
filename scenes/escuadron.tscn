@@ -4,6 +4,10 @@
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_k6d34"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_k6d34"]
+outline_size = 3
+outline_color = Color(0, 0, 0, 1)
+
 [node name="Escuadron" type="Area2D" unique_id=1839718332]
 script = ExtResource("1_571uh")
 
@@ -15,5 +19,6 @@ offset_right = 40.0
 offset_bottom = 23.0
 text = "5
 "
+label_settings = SubResource("LabelSettings_k6d34")
 
 [connection signal="area_entered" from="." to="." method="_on_area_entered"]

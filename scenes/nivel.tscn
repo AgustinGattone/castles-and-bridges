@@ -11,15 +11,21 @@ position = Vector2(1, 2)
 script = ExtResource("1_2p2iw")
 
 [node name="Base" parent="." unique_id=784258533 instance=ExtResource("1_0uyns")]
-position = Vector2(103, 76)
+position = Vector2(687, 473)
 
 [node name="Base2" parent="." unique_id=1470221921 instance=ExtResource("1_0uyns")]
-position = Vector2(96, 270)
+position = Vector2(689, 380)
 is_player = false
 current_troops = 10
 
 [node name="Base3" parent="." unique_id=1977577078 instance=ExtResource("1_0uyns")]
-position = Vector2(300, 76)
+position = Vector2(789, 475)
+is_player = false
+is_neutral = true
+current_troops = 5
+
+[node name="Base4" parent="." unique_id=613365738 instance=ExtResource("1_0uyns")]
+position = Vector2(782, 381)
 is_player = false
 is_neutral = true
 current_troops = 5
@@ -59,10 +65,10 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -141.0
-offset_top = -86.0
-offset_right = 136.0
-offset_bottom = 88.0
+offset_left = -151.0
+offset_top = -81.0
+offset_right = 126.0
+offset_bottom = 93.0
 grow_horizontal = 2
 grow_vertical = 2
 label_settings = SubResource("LabelSettings_k6d34")
