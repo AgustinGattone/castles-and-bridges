@@ -20,6 +20,8 @@ func _ready() -> void:
 	tropas_float = float(cantidad_tropas)
 	# Al nacer, actualiza el número visual
 	actualizar_texto()
+	# Aplicar el color del jugador
+	actualizar_color()
 
 func actualizar_texto() -> void:
 	label_tropas.text = str(cantidad_tropas)
@@ -86,3 +88,10 @@ func _on_area_entered(area: Area2D) -> void:
 		# Peleamos la batalla
 		en_combate = true
 		enemigo_actual = area 
+
+func actualizar_color() -> void:
+	if es_del_jugador:
+		modulate = Color(0.8, 0.2, 0.2) # Jugador
+	else :
+		modulate = Color(0.2, 0.2, 0.8) # Enemigo
+		
