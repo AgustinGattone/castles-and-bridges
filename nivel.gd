@@ -4,10 +4,12 @@ extends Node2D
 var base_seleccionada: Area2D = null
 var tiempo_decision_ia: float = 3.0
 var tiempo_actual_ia: float = 0.0
+var juego_terminado: bool = false
 
 #Referencias a la UI
 @onready var slider_tropas: HSlider = $UI/SliderTropas
 @onready var label_porcentaje: Label = $UI/LabelPorcentaje
+@onready var label_game_over: Label = $UI/LabelGameOver
 
 func _ready() -> void:
 	# Recorremos todos los nodos hijos que tenga el Nivel
@@ -25,12 +27,18 @@ func _on_slider_changed(valor: float) -> void:
 	label_porcentaje.text = str(valor) + "%"
 
 func _process(delta: float) -> void:
+	# Si el juego termina, frena la IA y el nivel.
+	if juego_terminado:
+		return
+	
 	tiempo_actual_ia += delta
 	
 	#Cada 3 segundos, Actua la IA
 	if tiempo_actual_ia >= tiempo_decision_ia:
 		ejecutar_ia_enemiga()
 		tiempo_actual_ia = 0.0 #Reinicio del Reloj
+	# Escaneamos el juego en cada frame
+		revisar_condiciones()
 
 # Esta función se ejecuta cada vez que CUALQUIER base es clickeada
 func _on_base_clicked(base_clicada: Area2D) -> void:
@@ -115,3 +123,33 @@ func ejecutar_ia_enemiga() -> void:
 			
 	# 4. ¡Ejecutar el ataque! Reutilizamos tu función de enviar tropas
 	enviar_tropas(base_origen_ia, base_objetivo_ia)
+
+# Final del Juego
+func revisar_condiciones() -> void:
+	var bases_jugador = 0
+	var bases_enemigo = 0
+	var escuadrones_jugador = 0
+	var escuadrones_enemigo = 0
+	
+	# Recuento final
+	for hijo in get_children():
+		if hijo.has_method("update_label"): # Si es una Base
+			if hijo.is_player:
+				bases_jugador += 1
+			elif not hijo.is_neutral:
+				bases_enemigo += 1
+		elif "es_del_jugador" in hijo: # Si es un escuadron
+			if hijo.es_del_jugador:
+				escuadrones_jugador += 1
+			else:
+				escuadrones_enemigo += 1
+	#Evaluacion final de los resultados
+	if bases_jugador == 0 and escuadrones_jugador == 0:
+		finalizar_juego("¡DERROTA!")
+	elif bases_enemigo == 0 and escuadrones_enemigo == 0:
+		finalizar_juego("¡VICTORIA!")
+
+func finalizar_juego(mensaje: String) -> void:
+	juego_terminado = true
+	label_game_over.text = mensaje
+	get_tree().paused = true

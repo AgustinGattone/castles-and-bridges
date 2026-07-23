@@ -3,6 +3,9 @@
 [ext_resource type="PackedScene" uid="uid://d2k3p2c3e42i7" path="res://scenes/base.tscn" id="1_0uyns"]
 [ext_resource type="Script" uid="uid://cp6gfi6oqhbbs" path="res://nivel.gd" id="1_2p2iw"]
 
+[sub_resource type="LabelSettings" id="LabelSettings_k6d34"]
+font_size = 60
+
 [node name="Nivel" type="Node2D" unique_id=902642756]
 position = Vector2(1, 2)
 script = ExtResource("1_2p2iw")
@@ -49,3 +52,17 @@ offset_right = 7.472
 offset_bottom = 35.191998
 text = "5
 "
+
+[node name="LabelGameOver" type="Label" parent="UI" unique_id=1417101138]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -141.0
+offset_top = -86.0
+offset_right = 136.0
+offset_bottom = 88.0
+grow_horizontal = 2
+grow_vertical = 2
+label_settings = SubResource("LabelSettings_k6d34")
