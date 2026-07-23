@@ -7,28 +7,36 @@
 font_size = 60
 
 [node name="Nivel" type="Node2D" unique_id=902642756]
+z_index = -1
 position = Vector2(1, 2)
 script = ExtResource("1_2p2iw")
 
-[node name="Base" parent="." unique_id=784258533 instance=ExtResource("1_0uyns")]
-position = Vector2(687, 473)
+[node name="Base" parent="." unique_id=784258533 node_paths=PackedStringArray("conexiones") instance=ExtResource("1_0uyns")]
+position = Vector2(511, 318)
+conexiones = [NodePath("../Base2"), NodePath("../Base3"), NodePath("../Base4")]
 
 [node name="Base2" parent="." unique_id=1470221921 instance=ExtResource("1_0uyns")]
-position = Vector2(689, 380)
+position = Vector2(511, 446)
 is_player = false
 current_troops = 10
 
 [node name="Base3" parent="." unique_id=1977577078 instance=ExtResource("1_0uyns")]
-position = Vector2(789, 475)
+position = Vector2(512, 180)
 is_player = false
 is_neutral = true
 current_troops = 5
 
 [node name="Base4" parent="." unique_id=613365738 instance=ExtResource("1_0uyns")]
-position = Vector2(782, 381)
+position = Vector2(383, 318)
 is_player = false
 is_neutral = true
 current_troops = 5
+
+[node name="Base6" parent="." unique_id=513224103 instance=ExtResource("1_0uyns")]
+position = Vector2(511, 62)
+
+[node name="Base5" parent="." unique_id=994443708 instance=ExtResource("1_0uyns")]
+position = Vector2(639, 318)
 
 [node name="UI" type="CanvasLayer" parent="." unique_id=589767614]
 
@@ -60,15 +68,16 @@ text = "5
 "
 
 [node name="LabelGameOver" type="Label" parent="UI" unique_id=1417101138]
+visible = false
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -151.0
-offset_top = -81.0
-offset_right = 126.0
-offset_bottom = 93.0
+offset_left = -141.0
+offset_top = -92.0
+offset_right = 136.0
+offset_bottom = 82.0
 grow_horizontal = 2
 grow_vertical = 2
 label_settings = SubResource("LabelSettings_k6d34")

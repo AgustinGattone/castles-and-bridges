@@ -57,9 +57,11 @@ func _on_base_clicked(base_clicada: Area2D) -> void:
 			base_seleccionada = null
 		# Si hacemos clic en OTRA base, ¡Enviamos las tropas!
 		else:
-			# Convertimos el valor del slider (10 a 100) en decimal (0.1 a 1.0)
-			var porcentaje_elegido = slider_tropas.value / 100.0
-			enviar_tropas(base_seleccionada, base_clicada, porcentaje_elegido)
+			if existe_ruta_valida(base_seleccionada, base_clicada):
+				var porcentaje_elegido = slider_tropas.value / 100.0
+				enviar_tropas(base_seleccionada, base_clicada, porcentaje_elegido)
+			else: 
+				return
 			
 			base_seleccionada.set_selected(false)
 			base_seleccionada = null
@@ -115,12 +117,17 @@ func ejecutar_ia_enemiga() -> void:
 	if base_origen_ia.current_troops < 15:
 		return
 		
-	# 3. Elegir a DÓNDE atacar (El objetivo con MENOS tropas)
-	var base_objetivo_ia = posibles_objetivos[0]
+	# 3. Elegir a DÓNDE atacar (Respetando el grafo)
+	var base_objetivo_ia = null
 	for objetivo in posibles_objetivos:
-		if objetivo.current_troops < base_objetivo_ia.current_troops:
-			base_objetivo_ia = objetivo
-			
+		if existe_ruta_valida(base_origen_ia, objetivo):
+			# Buscamos el objetivo válido más débil
+			if base_objetivo_ia == null or objetivo.current_troops < base_objetivo_ia.current_troops:
+				base_objetivo_ia = objetivo
+				
+	# Si no encontró ningún objetivo alcanzable, cancela el ataque
+	if base_objetivo_ia == null:
+		return
 	# 4. ¡Ejecutar el ataque! Reutilizamos tu función de enviar tropas
 	enviar_tropas(base_origen_ia, base_objetivo_ia)
 
@@ -153,3 +160,37 @@ func finalizar_juego(mensaje: String) -> void:
 	juego_terminado = true
 	label_game_over.text = mensaje
 	get_tree().paused = true
+
+func existe_ruta_valida(origen: Area2D, destino: Area2D) -> bool:
+	var visitados = []
+	var cola = [origen]
+	
+	while cola.size() > 0:
+		var actual = cola.pop_front()
+		
+		# Si encontramos el destino, la ruta es válida
+		if actual == destino:
+			return true
+			
+		visitados.append(actual)
+		
+		# Evaluamos a todos los vecinos conectados a la base actual
+		for vecino in actual.conexiones:
+			if vecino != null and not vecino in visitados and not vecino in cola:
+				# Si el vecino es el objetivo, lo añadimos para ganar
+				if vecino == destino:
+					cola.append(vecino)
+				# Si el vecino es un puente intermedio, SOLO podemos cruzar si es nuestro
+				elif not vecino.is_neutral and vecino.is_player == origen.is_player:
+					cola.append(vecino)
+					
+	return false
+
+func _draw() -> void:
+	# Recorremos todas las bases y dibujamos líneas hacia sus conexiones
+	for hijo in get_children():
+		if hijo.has_method("update_label"):
+			for conexion in hijo.conexiones:
+				if conexion != null:
+					# Dibuja una línea de color marrón claro de 4 píxeles de grosor
+					draw_line(hijo.position, conexion.position, Color(0.8, 0.6, 0.4, 0.5), 4.0)

@@ -13,7 +13,6 @@ config_version=5
 config/name="HillsAndRiversClone"
 run/main_scene="uid://c4vrmukc83un5"
 config/features=PackedStringArray("4.7", "GL Compatibility")
-config/icon="res://icon.svg"
 
 [display]
 

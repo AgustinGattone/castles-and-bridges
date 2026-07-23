@@ -12,12 +12,19 @@ signal base_clicked(base_node)
 @export var current_troops: int = 15
 var is_selected: bool = false # 
 
+# Array de bases que estan conectadas entre si.
+@export var conexiones: Array[Area2D]
+
 # Referencia al texto en pantalla
 @onready var troop_label: Label = $Label
 
 func _ready() -> void:
 	# Actualizamos el texto al iniciar la escena
 	update_label()
+	#Actualizar los caminos para ser bidireccionales.
+	for conexion in conexiones:
+		if conexion != null and not self in conexion.conexiones:
+			conexion.conexiones.append(self)
 
 # Función para actualizar el texto en la pantalla
 func update_label() -> void:
