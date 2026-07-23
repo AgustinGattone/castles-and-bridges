@@ -51,6 +51,7 @@ func enviar_tropas(origen: Area2D, destino: Area2D) -> void:
 	# 2. Le pasamos los datos que necesita
 	nuevo_escuadron.cantidad_tropas = tropas_a_enviar
 	nuevo_escuadron.base_destino = destino
+	nuevo_escuadron.es_del_jugador = origen.is_player
 	
 	# 3. Lo posicionamos exactamente donde está la base de origen
 	nuevo_escuadron.global_position = origen.global_position

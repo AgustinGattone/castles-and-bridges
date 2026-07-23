@@ -45,3 +45,11 @@ func _on_input_event(viewport: Node, event: InputEvent, shape_idx: int) -> void:
 	if event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		# Le decimos al Nivel: "!Me hicieron click, y soy yo (self)!"
 		base_clicked.emit(self)
+
+func actualizar_color_dueno() -> void:
+	if is_neutral:
+		modulate = Color(0.8, 0.8, 0.8) # Gris
+	elif is_player:
+		modulate = Color(0.2, 0.8, 0.2) # Verde (Tú)
+	else:
+		modulate = Color(0.8, 0.2, 0.2) # Rojo (Enemigo)

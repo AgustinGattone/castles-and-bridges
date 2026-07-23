@@ -3,6 +3,7 @@ extends Area2D
 # --- VARIABLES DEL ESCUADRÓN ---
 var cantidad_tropas: int = 0
 var base_destino: Area2D = null
+var es_del_jugador: bool = false
 var velocidad: float = 100.0 # Píxeles por segundo
 
 @onready var label_tropas: Label = $Label
@@ -28,8 +29,21 @@ func _process(delta: float) -> void:
 		entregar_tropas()
 
 func entregar_tropas() -> void:
-	# Le sumamos temporalmente las tropas al destino
-	base_destino.current_troops += cantidad_tropas
+	# Si el escuadron y la base son del mismo equipo (Refuerzo)
+	if base_destino.is_player == self.es_del_jugador and not base_destino.is_neutral:
+		base_destino.current_troops += cantidad_tropas
+	# Si son de equipos distintos (Ataque)
+	else:
+		base_destino.current_troops -= cantidad_tropas
+	# Ganamos el combate
+		if base_destino.current_troops < 0:
+			#Capturamos la base.
+			base_destino.current_troops = abs(base_destino.current_troops)
+			base_destino.is_player = self.es_del_jugador
+			base_destino.is_neutral = false
+			
+			#Actualizamos la base segun el color de su nuevo dueño
+			base_destino.actualizar_color_dueno()
 	base_destino.update_label()
 	
 	# Destruimos este escuadrón (lo borramos de la memoria)
