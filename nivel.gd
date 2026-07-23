@@ -5,6 +5,10 @@ var base_seleccionada: Area2D = null
 var tiempo_decision_ia: float = 3.0
 var tiempo_actual_ia: float = 0.0
 
+#Referencias a la UI
+@onready var slider_tropas: HSlider = $UI/SliderTropas
+@onready var label_porcentaje: Label = $UI/LabelPorcentaje
+
 func _ready() -> void:
 	# Recorremos todos los nodos hijos que tenga el Nivel
 	for hijo in get_children():
@@ -12,6 +16,13 @@ func _ready() -> void:
 		if hijo.has_method("update_label"):
 			# Conectamos su señal a nuestra nueva función
 			hijo.base_clicked.connect(_on_base_clicked)
+		# Conectamos la señal de la barra para que el texto cambie al moverla
+	slider_tropas.value_changed.connect(_on_slider_changed)
+	_on_slider_changed(slider_tropas.value) # Actualizamos el texto al iniciar
+
+# Nueva función que se ejecuta al mover la barra
+func _on_slider_changed(valor: float) -> void:
+	label_porcentaje.text = str(valor) + "%"
 
 func _process(delta: float) -> void:
 	tiempo_actual_ia += delta
@@ -38,35 +49,33 @@ func _on_base_clicked(base_clicada: Area2D) -> void:
 			base_seleccionada = null
 		# Si hacemos clic en OTRA base, ¡Enviamos las tropas!
 		else:
-			enviar_tropas(base_seleccionada, base_clicada)
-			# Limpiamos la selección
+			# Convertimos el valor del slider (10 a 100) en decimal (0.1 a 1.0)
+			var porcentaje_elegido = slider_tropas.value / 100.0
+			enviar_tropas(base_seleccionada, base_clicada, porcentaje_elegido)
+			
 			base_seleccionada.set_selected(false)
 			base_seleccionada = null
 
-# Lógica matemática de mover tropas (Teletransporte temporal)
-func enviar_tropas(origen: Area2D, destino: Area2D) -> void:
-	var tropas_a_enviar = origen.current_troops / 2
+# Lógica matemática de mover tropas 
+func enviar_tropas(origen: Area2D, destino: Area2D, porcentaje: float = 0.5) -> void:
+	# Calculamos las tropas multiplicando por el porcentaje (ej. 100 * 0.75)
+	var tropas_a_enviar = int(origen.current_troops * porcentaje)
 	
+	# Si intentamos enviar menos de 1 tropa, cancelamos para evitar errores
+	if tropas_a_enviar <= 0:
+		return
+		
 	# Restamos las tropas del origen
 	origen.current_troops -= tropas_a_enviar
 	origen.update_label()
 	
-	# -----------------------------------------------------
-	# NUEVO: En lugar de sumar al destino, creamos un escuadrón
-	# -----------------------------------------------------
-	
-	# 1. Clonamos la escena del escuadrón
+	# Instanciamos el escuadrón
 	var nuevo_escuadron = escuadron_escena.instantiate()
-	
-	# 2. Le pasamos los datos que necesita
 	nuevo_escuadron.cantidad_tropas = tropas_a_enviar
 	nuevo_escuadron.base_destino = destino
 	nuevo_escuadron.es_del_jugador = origen.is_player
-	
-	# 3. Lo posicionamos exactamente donde está la base de origen
 	nuevo_escuadron.global_position = origen.global_position
 	
-	# 4. Lo añadimos como "hijo" del Nivel para que aparezca en el juego
 	add_child(nuevo_escuadron)
 
 # Cargamos el "molde" del escuadrón
